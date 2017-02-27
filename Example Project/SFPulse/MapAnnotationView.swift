@@ -18,24 +18,24 @@ class MapAnnotationView: MKAnnotationView {
         super.init(coder: aDecoder)
     }
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
+//    override init(frame: CGRect) {
+//        super.init(frame: frame)
+//    }
 
-    private func configureView() {
-        backgroundColor = .clearColor()
+    fileprivate func configureView() {
+        backgroundColor = .clear
         let circlesize: Double = 8.0
         let circleView = UIView(frame: CGRect(x: -circlesize/2, y: -circlesize/2, width: circlesize, height: circlesize))
         circleView.center = center
         circleView.layer.cornerRadius = circleView.frame.size.width / 2
-        circleView.backgroundColor = UIColor.orangeColor()
+        circleView.backgroundColor = UIColor.orange
         addSubview(circleView)
 
-        let sfPulse = SFPulse(radius: 80, position: circleView.center, numberOfLayers: 2, animationDuration: 4.0, pulseColor: .orangeColor())
+        let sfPulse = SFPulse(radius: 80, position: circleView.center, numberOfLayers: 2, animationDuration: 4.0, pulseColor: .orange)
         layer.insertSublayer(sfPulse, below: circleView.layer)
 
-        UIView.animateWithDuration(1.2, delay: 0.3, usingSpringWithDamping: 0.3, initialSpringVelocity: 0.0, options: [], animations: {
-            circleView.transform = CGAffineTransformMakeScale(2, 2)
+        UIView.animate(withDuration: 1.2, delay: 0.3, usingSpringWithDamping: 0.3, initialSpringVelocity: 0.0, options: [], animations: {
+            circleView.transform = CGAffineTransform(scaleX: 2, y: 2)
             }, completion: nil)
     }
 

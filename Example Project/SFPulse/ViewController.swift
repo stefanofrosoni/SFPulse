@@ -13,7 +13,7 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var mapView: MKMapView!
 
-    private let regionRadius: CLLocationDistance = 1000
+    fileprivate let regionRadius: CLLocationDistance = 1000
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,18 +25,18 @@ class ViewController: UIViewController {
         mapView.addAnnotation(mapAnnotation)
     }
 
-    private func centerMapOnLocation(location: CLLocation) {
+    fileprivate func centerMapOnLocation(_ location: CLLocation) {
         let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, regionRadius * 2.0, regionRadius * 2.0)
         mapView.setRegion(coordinateRegion, animated: true)
     }
 }
 extension ViewController: MKMapViewDelegate {
 
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
 
-        if annotation.isKindOfClass(MapAnnotation) {
+        if annotation.isKind(of: MapAnnotation.self) {
 
-            guard let annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier(MapAnnotationView.identifier) else {
+            guard let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: MapAnnotationView.identifier) else {
                 let mapAnnotationView = MapAnnotationView(annotation: annotation, reuseIdentifier: MapAnnotationView.identifier)
                 return mapAnnotationView
             }

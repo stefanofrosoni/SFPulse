@@ -11,23 +11,23 @@ import UIKit
 
 class SFPulse: CAReplicatorLayer {
     
-    private let originValueForRadius: Float = 0.0
-    private let originValueForAlpha: Float = 0.45
-    private let keyTimeForHalfOpacity:Float = 0.2
-    private let useTimingFunction: Bool = true
-    private var animationGroup: CAAnimationGroup = CAAnimationGroup()
-    private var effect: CALayer = CALayer()
-    private var numberOfLayers: Int = 1
-    private var animationDuration: NSTimeInterval = 2.8
-    private var pulseInterval: NSTimeInterval = 0.0
+    fileprivate let originValueForRadius: Float = 0.0
+    fileprivate let originValueForAlpha: Float = 0.45
+    fileprivate let keyTimeForHalfOpacity:Float = 0.2
+    fileprivate let useTimingFunction: Bool = true
+    fileprivate var animationGroup: CAAnimationGroup = CAAnimationGroup()
+    fileprivate var effect: CALayer = CALayer()
+    fileprivate var numberOfLayers: Int = 1
+    fileprivate var animationDuration: TimeInterval = 2.8
+    fileprivate var pulseInterval: TimeInterval = 0.0
     
-    override init(layer: AnyObject) {
+    override init(layer: Any) {
         super.init(layer: layer)
     }
     
-    init(radius: CGFloat, position: CGPoint, numberOfLayers: Int, animationDuration: NSTimeInterval, pulseColor: UIColor) {
+    init(radius: CGFloat, position: CGPoint, numberOfLayers: Int, animationDuration: TimeInterval, pulseColor: UIColor) {
         super.init()
-        backgroundColor = pulseColor.CGColor
+        backgroundColor = pulseColor.cgColor
         setupLayerWithColor(pulseColor)
         setupRadius(radius)
         setupNumberOfLayers(numberOfLayers)
@@ -36,11 +36,11 @@ class SFPulse: CAReplicatorLayer {
         self.animationDuration = animationDuration
         
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+        DispatchQueue.global(qos: .default).async(execute: { () -> Void in
             self.setupAnimationGroup()
             if self.pulseInterval != Double.infinity {
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.effect.addAnimation(self.animationGroup, forKey: "pulse")
+                DispatchQueue.main.async(execute: {
+                    self.effect.add(self.animationGroup, forKey: "pulse")
                 })
             }
         })
@@ -50,21 +50,21 @@ class SFPulse: CAReplicatorLayer {
         super.init(coder: aDecoder)
     }
     
-    func setupLayerWithColor(color: UIColor) {
+    func setupLayerWithColor(_ color: UIColor) {
         self.effect = CALayer()
-        self.effect.contentsScale = UIScreen.mainScreen().scale
+        self.effect.contentsScale = UIScreen.main.scale
         self.effect.opacity = 0
-        self.effect.backgroundColor = color.CGColor
+        self.effect.backgroundColor = color.cgColor
         self.addSublayer(self.effect)
     }
     
-    func setupRadius(radius: CGFloat) {
+    func setupRadius(_ radius: CGFloat) {
         let diameter = radius * 2
         self.effect.bounds = CGRect(x: 0.0, y: 0.0, width: diameter, height: diameter)
         self.effect.cornerRadius = radius
     }
     
-    func setupNumberOfLayers(numberOfLayers: Int) {
+    func setupNumberOfLayers(_ numberOfLayers: Int) {
         self.numberOfLayers = numberOfLayers
         self.instanceCount = numberOfLayers
         self.instanceDelay = (animationDuration + pulseInterval) / Double(numberOfLayers)
@@ -74,7 +74,7 @@ class SFPulse: CAReplicatorLayer {
         animationGroup = CAAnimationGroup()
         animationGroup.duration = animationDuration + pulseInterval
         animationGroup.repeatCount = Float.infinity
-        animationGroup.removedOnCompletion = false
+        animationGroup.isRemovedOnCompletion = false
         
         if useTimingFunction {
             let defaultCurve = CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
@@ -86,8 +86,8 @@ class SFPulse: CAReplicatorLayer {
     
     func scaleAnimation() -> CABasicAnimation {
         let scaleAnimation = CABasicAnimation(keyPath: "transform.scale.xy")
-        scaleAnimation.fromValue = NSNumber(float: originValueForRadius)
-        scaleAnimation.toValue = NSNumber(float: 1.0)
+        scaleAnimation.fromValue = NSNumber(value: originValueForRadius as Float)
+        scaleAnimation.toValue = NSNumber(value: 1.0 as Float)
         scaleAnimation.duration = animationDuration
         return scaleAnimation
     }
@@ -96,8 +96,8 @@ class SFPulse: CAReplicatorLayer {
         let opacityAnimation = CAKeyframeAnimation(keyPath: "opacity")
         opacityAnimation.duration = animationDuration
         opacityAnimation.values = [originValueForAlpha, 0.8, 0]
-        opacityAnimation.keyTimes = [0, keyTimeForHalfOpacity, 1]
-        opacityAnimation.removedOnCompletion = false
+        opacityAnimation.keyTimes = [0, NSNumber(value: keyTimeForHalfOpacity), 1]
+        opacityAnimation.isRemovedOnCompletion = false
         return opacityAnimation
     }
     
